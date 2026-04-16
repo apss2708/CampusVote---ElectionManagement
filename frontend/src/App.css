@@ -1,0 +1,13 @@
+/*
+  App.css — Minimal, non-conflicting overrides.
+  All layout is handled in index.css.
+*/
+
+/* Remove Vite scaffold defaults that conflict with our layout */
+#root {
+  /* Let the app-shell control width; no centering override */
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
