@@ -989,6 +989,17 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
+                {elections.length === 0 ? (
+                  <tr>
+                    <td colSpan={5}>
+                      <div className="empty-state">
+                        <span className="empty-state__icon">🗳️</span>
+                        <h3>No elections yet</h3>
+                        <p>Publish your first election to kick off the voting cycle.</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null}
                 <AnimatePresence>
                 {elections.map((election, idx) => (
                   <motion.tr 
@@ -1060,6 +1071,17 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
+              {candidates.length === 0 ? (
+                <tr>
+                  <td colSpan={4}>
+                    <div className="empty-state">
+                      <span className="empty-state__icon">👥</span>
+                      <h3>No candidates yet</h3>
+                      <p>Register candidates for this election before voting opens.</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
               {candidates.map((candidate, idx) => (
                 <motion.tr 
                   key={candidate.candidate_id}

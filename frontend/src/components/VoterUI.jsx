@@ -672,13 +672,13 @@ export default function VoterUI() {
               </p>
               
               <div className="terminal-consent" style={{ 
-                marginTop: '32px', 
-                marginBottom: '8px', 
+                marginTop: 'var(--space-7)', 
+                marginBottom: 'var(--space-2)', 
                 textAlign: 'left', 
-                background: 'rgba(255, 255, 255, 0.6)', 
+                background: 'var(--glass-bg)', 
                 backdropFilter: 'blur(10px)',
-                padding: '24px', 
-                borderRadius: '20px', 
+                padding: 'var(--space-6)', 
+                borderRadius: 'var(--radius-panel)', 
                 border: '1px solid rgba(79, 70, 229, 0.12)',
                 boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.05)'
               }}>
@@ -688,13 +688,14 @@ export default function VoterUI() {
                     id="consent-checkbox"
                     className="custom-checkbox"
                     style={{ marginTop: '5px', cursor: 'pointer', width: '20px', height: '20px' }}
+                    aria-label="I consent to ephemeral biometric hashing for voter verification"
                     onChange={(e) => {
                       if (e.target.checked) {
                         setState((current) => ({ ...current, step: 'scan', error: null }))
                       }
                     }} 
                   />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--ink-soft)', lineHeight: 1.6 }}>
+                  <span id="voter-consent-text" style={{ fontSize: '0.9rem', color: 'var(--ink-soft)', lineHeight: 1.6 }}>
                     <strong style={{ color: 'var(--ink)', display: 'block', marginBottom: '6px', fontSize: '1rem' }}>Data Privacy Consent</strong>
                     I explicitly consent to the ephemeral acquisition and cryptographic hashing of my biometric data for identity verification. No raw biometric templates will be persistently stored or transmitted. <a href="/privacy" target="_blank" style={{ color: 'var(--brand)', textDecoration: 'underline', fontWeight: 600 }}>View full policy</a>
                   </span>
@@ -721,7 +722,13 @@ export default function VoterUI() {
                 className="scan-line" 
               />
             </div>
-            <div className="terminal-status" style={{ fontSize: '1.2rem', marginTop: '24px' }}>
+            <div
+              className="terminal-status"
+              style={{ fontSize: '1.2rem', marginTop: '24px' }}
+              role="status"
+              aria-live="polite"
+              aria-busy={loading}
+            >
               <motion.span 
                 animate={{ opacity: [1, 0.4, 1] }} 
                 transition={{ duration: 1, repeat: Infinity }}
@@ -733,7 +740,7 @@ export default function VoterUI() {
               {state.error ? 'The system encountered an error communicating with the institutional identity server.' : currentText('scanHint')}
             </p>
             {state.error && (
-              <div style={{ marginTop: '24px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <div role="alert" style={{ marginTop: '24px', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <AnimatedButton
                   type="button" 
                   className="terminal-primary"
