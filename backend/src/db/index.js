@@ -5,7 +5,7 @@ const { createClient } = require('redis');
 const dotenv = require('dotenv');
 const { CONTEXT_SCHEMAS } = require('../contexts/context.config.js');
 
-dotenv.config({ path: require('path').resolve(__dirname, '../../../.env') });
+dotenv.config({ path: require('path').resolve(__dirname, '../../.env') });
 
 // PostgreSQL Connection with Sequelize (ORM)
 let sequelizeOptions = {
@@ -28,13 +28,14 @@ let sequelizeOptions = {
 };
 
 const forceSqlite = String(process.env.USE_SQLITE || '').toLowerCase() === 'true';
+const useSqlite = forceSqlite || (process.env.NODE_ENV === 'development' && !process.env.POSTGRES_HOST);
 
 // Use SQLite as fallback for development if Postgres is not available
-if (forceSqlite || (process.env.NODE_ENV === 'development' && !process.env.POSTGRES_HOST)) {
+if (useSqlite) {
     console.log('⚠️  Using SQLite for development...');
     sequelizeOptions = {
         dialect: 'sqlite',
-        storage: './election_db.sqlite',
+        storage: process.env.SQLITE_STORAGE || './election_db.sqlite',
         logging: console.log,
         define: {
             timestamps: true,
@@ -50,6 +51,8 @@ const sequelize = new Sequelize(
     process.env.POSTGRES_PASSWORD || 'changeme_secure_password',
     sequelizeOptions
 );
+
+const postgresEnabled = !useSqlite;
 
 // MongoDB Connection with Mongoose
 const mongoURI = process.env.MONGODB_URI || `mongodb://${process.env.MONGODB_USER || 'mongo_admin'}:${process.env.MONGODB_PASSWORD || 'changeme_mongo_password'}@${process.env.MONGODB_HOST || 'localhost'}:${process.env.MONGODB_PORT || 27017}/${process.env.MONGODB_DB || 'election_logs'}?authSource=admin`;
@@ -870,8 +873,12 @@ const ensureBootstrapAdmin = async () => {
     console.log(`✅ Bootstrapped admin user '${username}' from environment`);
 };
 
-// Test PostgreSQL connection
+// Test PostgreSQL connection (skipped when running on SQLite)
 const testPostgresConnection = async () => {
+    if (!postgresEnabled) {
+        console.log('ℹ️  PostgreSQL disabled (SQLite mode) — skipping connection test');
+        return;
+    }
     try {
         await sequelize.authenticate();
         console.log('✅ PostgreSQL connected successfully');

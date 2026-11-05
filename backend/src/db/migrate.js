@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
 const { Pool } = pg;
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
 
 const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
 
